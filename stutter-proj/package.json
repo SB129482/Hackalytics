@@ -22,6 +22,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@testing-library/react": "^14.2.1",
+    "axios": "^1.6.7",
+    "fs": "^0.0.1-security",
     "lamejs": "^1.2.1",
     "mic-recorder-to-mp3": "^2.2.2",
     "react": "^18.2.0",

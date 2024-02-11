@@ -8,6 +8,8 @@ import { render, screen } from '@testing-library/react';
 import MicButton from "./components/MicButton.jsx";
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, InputToolbox, Button } from '@chatscope/chat-ui-kit-react'
 import { faL, faRotate } from '@fortawesome/free-solid-svg-icons';
+import axios from "axios";
+
 
 const API_KEY = "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";
 const PROMPTS = [

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import axios from "axios";
+// import { fs } from 'fs';
 
 
 const MicButton = () => {
@@ -11,12 +13,28 @@ const MicButton = () => {
     const [audioUrl, setAudioUrl] = useState(null);
 
     useEffect(() => {
-        if (recordedChunks.length > 0) {
-            const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-            const url = URL.createObjectURL(audioBlob)
-            setAudioUrl(url);
-            console.log('Recording stopped, audio URL:', url);
-        }
+        (async () => {
+
+            if (recordedChunks.length > 0) {
+                const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+                const url = URL.createObjectURL(audioBlob)
+                setAudioUrl(url);
+                console.log('Recording stopped, audio URL:', url);
+
+                const formData = new FormData();
+                formData.append('file', url); // assuming you're using an input element of type file
+
+                try {
+                    const response = await fetch('http://127.0.0.1:5002/upload', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    // Handle response
+                } catch (error) {
+                    // Handle error
+                }
+            }
+        })();
     }, [recordedChunks])
 
     const startRecording = async () => {
@@ -28,13 +46,6 @@ const MicButton = () => {
                 setRecordedChunks((prev) => [...prev, e.data]);
             };
 
-            // recorder.onstop = () => {
-            //     // setRecordedChunks((prev) => [...prev, recorded]);
-            //     const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-            //     const url = URL.createObjectURL(audioBlob)
-            //     setAudioUrl(url);
-            //     console.log('Recording stopped, audio URL:', url);
-            // };
 
             recorder.start();
             setIsRecording(true);

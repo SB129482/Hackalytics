@@ -3,15 +3,15 @@ import librosa
 import numpy as np
 from keras.models import load_model
 
-# from flask_cors import CORS, cross_origin
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-# cors = CORS(app)
-# app.config["CORS_HEADERS"] = "Content-Type"
+cors = CORS(app)
+app.config["CORS_HEADERS"] = "Content-Type"
 
 
 @app.route("/upload", methods=["POST"])
-# @cross_origin()
+@cross_origin()
 def upload_blob():
     print("reached")
     if "file" not in request.files:
@@ -23,7 +23,7 @@ def upload_blob():
     print("reached3")
 
     # Process the data
-    y, sr = librosa.load("./test.wav")
+    y, sr = librosa.load("./temp.wav")
     D = librosa.stft(y)
     S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
     X_new = S_db.flatten()

@@ -1,97 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle, faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 // import { fs } from 'fs';
 
-
 const MicButton = () => {
-    const [isRecording, setIsRecording] = useState(false);
-    const [mediaRecorder, setMediaRecorder] = useState(null);
-    const [recordedChunks, setRecordedChunks] = useState([]);
-    const [recorded, setRecorded] = useState(null);
-    const [audioUrl, setAudioUrl] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [recordedChunks, setRecordedChunks] = useState([]);
+  const [recorded, setRecorded] = useState(null);
+  const [audioUrl, setAudioUrl] = useState(null);
 
-    useEffect(() => {
-        (async () => {
+  useEffect(() => {
+    (async () => {
+      if (recordedChunks.length > 0) {
+        const audioBlob = new Blob(recordedChunks, { type: "audio/wav" });
+        const url = URL.createObjectURL(audioBlob);
+        setAudioUrl(url);
+        console.log("Recording stopped, audio URL:", url);
 
-            if (recordedChunks.length > 0) {
-                const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-                const url = URL.createObjectURL(audioBlob)
-                setAudioUrl(url);
-                console.log('Recording stopped, audio URL:', url);
-
-                const formData = new FormData();
-                formData.append('file', url); // assuming you're using an input element of type file
-
-                try {
-                    const response = await fetch('http://127.0.0.1:5002/upload', {
-                        method: 'POST',
-                        body: formData,
-                    });
-                    // Handle response
-                } catch (error) {
-                    // Handle error
-                }
-            }
-        })();
-    }, [recordedChunks])
-
-    const startRecording = async () => {
+        const formData = new FormData();
+        formData.append("file", audioBlob); // assuming you're using an input element of type file
+        console.log(formData);
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const recorder = new MediaRecorder(stream);
+          const response = await fetch("http://127.0.0.1:5002/upload", {
+            method: "POST",
+            body: formData,
+          });
+          // Handle response
+          //   console.log(response);
 
-            recorder.ondataavailable = (e) => {
-                setRecordedChunks((prev) => [...prev, e.data]);
-            };
-
-
-            recorder.start();
-            setIsRecording(true);
-            setMediaRecorder(recorder);
-        } catch (err) {
-            console.error('Error accessing microphone:', err);
+          const responseData = await response.text(); // or response.json() if response is JSON
+          console.log(responseData);
+        } catch (error) {
+          // Handle error
         }
-    };
+      }
+    })();
+  }, [recordedChunks]);
 
-    const stopRecording = () => {
-        if (mediaRecorder && isRecording) {
-            mediaRecorder.stop();
-            setIsRecording(false);
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
 
-            // // Create the Blob after stopping recording
-            // const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-            // const url = URL.createObjectURL(audioBlob);
+      recorder.ondataavailable = (e) => {
+        setRecordedChunks((prev) => [...prev, e.data]);
+      };
 
-            // // Create anchor element for downloading the audio Blob
-            // const anchor = document.createElement('a');
-            // anchor.href = url;
-            // anchor.download = `${url}.wav`;
+      recorder.start();
+      setIsRecording(true);
+      setMediaRecorder(recorder);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+    }
+  };
 
-            // // Trigger click event to initiate download
-            // anchor.click();
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      setIsRecording(false);
 
-            // // Clean up
-            // URL.revokeObjectURL(url);
-            // anchor.remove();
+      // // Create the Blob after stopping recording
+      // const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+      // const url = URL.createObjectURL(audioBlob);
 
-            // Clear recordedChunks for the next recording
-            setRecordedChunks([]);
-        }
-    };
+      // // Create anchor element for downloading the audio Blob
+      // const anchor = document.createElement('a');
+      // anchor.href = url;
+      // anchor.download = `${url}.wav`;
 
-    return (
-        <div>
-            <button
-                onClick={isRecording ? stopRecording : startRecording}
-                style={{ backgroundColor: "#C9DFF0" }}
-            >
-                {isRecording ? <FontAwesomeIcon icon={faCircle} /> : <FontAwesomeIcon icon={faMicrophone} />}
-            </button>
-            {/* <audio src={audioUrl} controls="controls" /> */}
-        </div>
-    );
+      // // Trigger click event to initiate download
+      // anchor.click();
+
+      // // Clean up
+      // URL.revokeObjectURL(url);
+      // anchor.remove();
+
+      // Clear recordedChunks for the next recording
+      setRecordedChunks([]);
+    }
+  };
+
+  return (
+    <div>
+      <button
+        onClick={isRecording ? stopRecording : startRecording}
+        style={{ backgroundColor: "#C9DFF0" }}
+      >
+        {isRecording ? (
+          <FontAwesomeIcon icon={faCircle} />
+        ) : (
+          <FontAwesomeIcon icon={faMicrophone} />
+        )}
+      </button>
+      {/* <audio src={audioUrl} controls="controls" /> */}
+    </div>
+  );
 };
 
 export default MicButton;

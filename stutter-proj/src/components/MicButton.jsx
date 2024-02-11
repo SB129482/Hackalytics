@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const MicButton = () => {
     const [isRecording, setIsRecording] = useState(false);
@@ -7,6 +7,14 @@ const MicButton = () => {
     const [recorded, setRecorded] = useState(null);
     const [audioUrl, setAudioUrl] = useState(null);
 
+    useEffect(() => {
+        if (recordedChunks.length > 0) {
+            const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+            const url = URL.createObjectURL(audioBlob)
+            setAudioUrl(url);
+            console.log('Recording stopped, audio URL:', url);
+        }
+    }, [recordedChunks])
 
     const startRecording = async () => {
         try {
@@ -14,16 +22,16 @@ const MicButton = () => {
             const recorder = new MediaRecorder(stream);
 
             recorder.ondataavailable = (e) => {
-                setRecorded(e.data);
+                setRecordedChunks((prev) => [...prev, e.data]);
             };
 
-            recorder.onstop = () => {
-                setRecordedChunks((prev) => [...prev, recorded]);
-                const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-                const url = URL.createObjectURL(audioBlob)
-                setAudioUrl(url);
-                console.log('Recording stopped, audio URL:', url);
-            };
+            // recorder.onstop = () => {
+            //     // setRecordedChunks((prev) => [...prev, recorded]);
+            //     const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+            //     const url = URL.createObjectURL(audioBlob)
+            //     setAudioUrl(url);
+            //     console.log('Recording stopped, audio URL:', url);
+            // };
 
             recorder.start();
             setIsRecording(true);
@@ -38,21 +46,21 @@ const MicButton = () => {
             mediaRecorder.stop();
             setIsRecording(false);
 
-            // Create the Blob after stopping recording
-            const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-            const url = URL.createObjectURL(audioBlob);
+            // // Create the Blob after stopping recording
+            // const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+            // const url = URL.createObjectURL(audioBlob);
 
-            // Create anchor element for downloading the audio Blob
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.download = `${url}.wav`;
+            // // Create anchor element for downloading the audio Blob
+            // const anchor = document.createElement('a');
+            // anchor.href = url;
+            // anchor.download = `${url}.wav`;
 
-            // Trigger click event to initiate download
-            anchor.click();
+            // // Trigger click event to initiate download
+            // anchor.click();
 
-            // Clean up
-            URL.revokeObjectURL(url);
-            anchor.remove();
+            // // Clean up
+            // URL.revokeObjectURL(url);
+            // anchor.remove();
 
             // Clear recordedChunks for the next recording
             setRecordedChunks([]);

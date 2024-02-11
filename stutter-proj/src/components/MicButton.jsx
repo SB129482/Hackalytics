@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircle, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+
 
 const MicButton = () => {
     const [isRecording, setIsRecording] = useState(false);
@@ -69,10 +72,13 @@ const MicButton = () => {
 
     return (
         <div>
-            <button onClick={isRecording ? stopRecording : startRecording}>
-                {isRecording ? 'Stop Recording' : 'Start Recording'}
+            <button
+                onClick={isRecording ? stopRecording : startRecording}
+                style={{ backgroundColor: "#C9DFF0" }}
+            >
+                {isRecording ? <FontAwesomeIcon icon={faCircle} /> : <FontAwesomeIcon icon={faMicrophone} />}
             </button>
-            <audio src={audioUrl} controls="controls" />
+            {/* <audio src={audioUrl} controls="controls" /> */}
         </div>
     );
 };

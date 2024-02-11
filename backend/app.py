@@ -60,7 +60,7 @@ def upload_blob():
     res = ""
     for category, prediction in result_dict.items():
         print(f"{category}: {prediction}")
-        res += f"{category}: {prediction}"
+        res += f"{category}: {prediction},"
 
     return res
 

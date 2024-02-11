@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.bulleted-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.bulleted-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.bulleted-list li:last-child {
+    border-bottom: none;
+}
+
+.bulleted-list li:before {
+    content: "\2022";
+    color: #007bff;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}

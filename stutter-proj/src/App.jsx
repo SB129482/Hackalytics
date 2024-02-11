@@ -6,7 +6,8 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { render, screen } from '@testing-library/react';
 import MicButton from "./components/MicButton.jsx";
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, InputToolbox } from '@chatscope/chat-ui-kit-react'
+import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator, InputToolbox, Button } from '@chatscope/chat-ui-kit-react'
+import { faL, faRotate } from '@fortawesome/free-solid-svg-icons';
 
 const API_KEY = "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";
 const PROMPTS = [
@@ -26,6 +27,7 @@ function App() {
     message: "When you're ready, record yourself reciting this passage: \n" + PROMPTS[Math.floor(Math.random() * PROMPTS.length)],
     sender: "Stutstut"
   }])
+  const [restart, setRestart] = useState(false);
 
   const handleSend = async (message) => {
     const newMessage = {
@@ -91,6 +93,15 @@ function App() {
       });
   }
 
+  const restartFunc = () => {
+    setMessages([{
+      message: "When you're ready, record yourself reciting this passage: \n" + PROMPTS[Math.floor(Math.random() * PROMPTS.length)],
+      sender: "Stutstut"
+    }]);
+    setRestart(false);
+    setIsTyping(false);
+  }
+
 
   return (
     <div>
@@ -110,6 +121,12 @@ function App() {
             {/* </div> */}
             <InputToolbox>
               <MicButton />
+              <button
+                onClick={restartFunc}
+                style={{ backgroundColor: "#C9DFF0" }}
+              >
+                <FontAwesomeIcon icon={faRotate} />
+              </button>
             </InputToolbox>
           </ChatContainer>
         </MainContainer>

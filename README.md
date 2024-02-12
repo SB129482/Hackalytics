@@ -1,6 +1,6 @@
 # Stutstut
 ### Stutstut is an app that improves the speech quality of users via personalized practice to overcome stuttering.
-### Sishnukeshav Balamurali, David Chan, James Gao, Shreya Sasmal
+#### Sishnukeshav Balamurali, David Chan, James Gao, Shreya Sasmal
 #### Built at GT Hacklytics 2024
 
 Find our project on Devfolio!

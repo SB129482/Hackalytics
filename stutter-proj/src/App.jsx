@@ -73,9 +73,10 @@ function App() {
   };
 
   async function processMessageToCloudflareAI(chatMessages) {
+    console.log(chatMessages);
     const source = new EventSource(
       "https://stutstut.jamesgaowenzhen.workers.dev?request=" +
-        chatMessages[1].message
+        chatMessages.at(-1).message
     );
     let res = "";
     source.onmessage = (event) => {
